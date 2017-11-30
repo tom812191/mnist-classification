@@ -2,6 +2,7 @@ import luigi
 import os
 import numpy as np
 import json
+import pickle
 
 from keras.models import load_model
 
@@ -76,4 +77,4 @@ class EvaluateCNN(luigi.Task):
         evaluation = evaluate.evaluate_output(proba_predictions, y_test)
 
         with self.output().open('w') as f:
-            json.dump(evaluation, f)
+            pickle.dump(evaluation, f)
