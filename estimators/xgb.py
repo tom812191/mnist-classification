@@ -17,34 +17,34 @@ def tune_xgb(X_train, y_train, use_evolution=True):
 
     :return: The fitted model from the search (sklearn GridSearchCV object or EvolutionaryAlgorithmSearchCV object)
     """
-    gbm = xgb.XGBClassifier(max_depth=3, n_estimators=300, learning_rate=0.05)
+    gbm = xgb.XGBClassifier(objective='multi:softprob')
 
     param_grid = {
-        'max_depth': np.linspace(1, 9, 5).astype(int),
-        'n_estimators': np.linspace(100, 1500, 5).astype(int),
-        'learning_rate': [0.0005, 0.005, 0.05, 0.1, 0.3],
-        'reg_alpha': [0, 0.2, 0.5, 1, 2],
-        'reg_lambda': [0, 0.2, 0.5, 1, 2],
-        'gamma': [0, 0.2, 0.5, 1, 2],
-        'min_child_weight': np.linspace(0.1, 1.5, 5),
+        'max_depth': [5],
+        'n_estimators': [10, 100, 500],
+        'learning_rate': [0.1],
+        # 'reg_alpha': [0, 0.2, 0.5, 1, 2],
+        # 'reg_lambda': [0, 0.2, 0.5, 1, 2],
+        # 'gamma': [0, 0.2, 0.5, 1, 2],
+        # 'min_child_weight': [1, 2],
 
     }
 
     search_params = {
         'verbose': 10,
         'scoring': 'neg_log_loss',
-        'cv': 5,
+        'cv': 2,
     }
 
     if use_evolution:
         search = EvolutionaryAlgorithmSearchCV(
             estimator=gbm,
             params=param_grid,
-            population_size=20,
+            population_size=10,
             gene_mutation_prob=0.10,
             gene_crossover_prob=0.5,
             tournament_size=3,
-            generations_number=20,
+            generations_number=10,
             **search_params
         )
     else:

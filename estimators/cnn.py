@@ -18,8 +18,8 @@ def train_model(X_train, y_train, X_test, y_test, epochs=30, batch_size=32):
     :return: training history information, trained model
     """
 
-    y_train = to_categorical(y_train, num_classes=10).astype(int)
-    y_test = to_categorical(y_test, num_classes=10).astype(int)
+    y_train = to_categorical(y_train, num_classes=10)
+    y_test = to_categorical(y_test, num_classes=10)
 
     model = get_model()
     optimizer = RMSprop(lr=0.0001, rho=0.9, epsilon=1e-08, decay=0.0)
@@ -75,16 +75,13 @@ def get_model(input_shape=(28, 28, 1), feature_extraction_layer_name='feature_ex
     return model
 
 
-def extract_features(model, X, feature_extraction_layer_name='feature_extraction'):
+def get_feature_extraction_model(model, feature_extraction_layer_name='feature_extraction'):
     """
-    Get the values for the last dense layer before the output layer
+    Get the model for the last dense layer before the output layer
 
     :param model: The keras model that has already been trained
-    :param X: np.array of shape nxpxp1 of images to extract features from
     :param feature_extraction_layer_name: Name of the final dense layer before the output layer
 
-    :return: np.array of shape nxm of extracted features
+    :return: keras model
     """
-    feature_extraction_layer_model = Model(inputs=model.input,
-                                           outputs=model.get_layer(feature_extraction_layer_name).output)
-    return feature_extraction_layer_model.predict(X)
+    return Model(inputs=model.input, outputs=model.get_layer(feature_extraction_layer_name).output)

@@ -3,6 +3,7 @@ import os
 import numpy as np
 import pandas as pd
 import json
+import pickle
 
 from config import DATA_ROOT
 
@@ -36,7 +37,7 @@ class XGBModelSelection(luigi.Task):
 
         y_aug_train = np.load(paths['y_aug_train'])
 
-        estimator = xgb.tune_xgb(X_aug_train_features, y_aug_train, use_evolution=True)
+        estimator = xgb.tune_xgb(X_aug_train_features, y_aug_train, use_evolution=False)
 
         paths = {
             'cv_results': os.path.join(DATA_ROOT, 'xgb_cv_results.csv'),
@@ -63,7 +64,6 @@ class XGBFitModel(luigi.Task):
             KerasCNNExtractFeatures(),
             AugmentData(),
             XGBModelSelection(),
-            PreprocessRawData(),
         ]
 
     def output(self):
@@ -74,6 +74,7 @@ class XGBFitModel(luigi.Task):
             paths = json.load(path_file)
 
         X_aug_train_features = np.load(paths['X_aug_train_features'])
+        X_test_features = np.load(paths['X_test_features'])
 
         with self.input()[1].open('r') as path_file:
             paths = json.load(path_file)
@@ -83,24 +84,25 @@ class XGBFitModel(luigi.Task):
         with self.input()[2].open('r') as path_file:
             paths = json.load(path_file)
 
-        params = json.load(paths['best_params'])
+        with open(paths['best_params'], 'r') as f:
+            params = json.load(f)
 
         estimator = xgb.fit_xgb(X_aug_train_features, y_aug_train, params)
 
-        with self.input()[3].open('r') as path_file:
-            paths = json.load(path_file)
-
-        X_test = np.load(paths['X_test'])
-        predictions = estimator.predict(X_test)
-        proba_predictions = estimator.predict_proba(X_test)
+        predictions = estimator.predict(X_test_features)
+        proba_predictions = estimator.predict_proba(X_test_features)
 
         paths = {
             'predictions': os.path.join(DATA_ROOT, 'xgb_predictions.csv'),
             'proba_predictions': os.path.join(DATA_ROOT, 'xgb_proba_predictions.csv'),
+            'model': os.path.join(DATA_ROOT, 'xgb_model.p')
         }
 
         np.save(paths['predictions'], predictions)
         np.save(paths['proba_predictions'], proba_predictions)
+
+        with open(paths['model'], 'wb') as f:
+            pickle.dump(estimator, f)
 
         with self.output().open('w') as f:
             json.dump(paths, f)
