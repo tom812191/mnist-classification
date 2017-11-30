@@ -1,3 +1,6 @@
+# TODO: Retrain CNN with data_aug set to 3 and 30 epochs.
+# TODO: Remove XGB
+
 from keras.models import Sequential, Model
 from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
 from keras.optimizers import RMSprop

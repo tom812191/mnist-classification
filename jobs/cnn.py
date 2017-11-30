@@ -40,7 +40,8 @@ class KerasCNNFitModel(luigi.Task):
         X_test = np.load(paths['X_test'])
         y_test = np.load(paths['y_test'])
 
-        history, model = cnn.train_model(X_aug_train, y_aug_train, X_test, y_test, epochs=CNN_CONFIG['epochs'])
+        history, model = cnn.train_model(X_aug_train, y_aug_train, X_test, y_test,
+                                         epochs=CNN_CONFIG['epochs'], batch_size=CNN_CONFIG['batch_size'])
 
         paths = {
             'history': os.path.join(DATA_ROOT, 'cnn_history.p'),
