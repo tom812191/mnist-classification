@@ -6,6 +6,17 @@ from keras.utils.np_utils import to_categorical
 
 
 def train_model(X_train, y_train, X_test, y_test, epochs=30, batch_size=32):
+    """
+    Train model on all training data
+
+    :param X_train: Training images, np.array of shape nxpxpx1
+    :param y_train: Training labels, np.array of shape n
+    :param X_test: Test images, np.array of shape mxpxpx1
+    :param y_test: Test labels, np.array of shape m
+    :param epochs: Number of training epochs
+    :param batch_size: Training Batch size
+    :return: training history information, trained model
+    """
 
     y_train = to_categorical(y_train, num_classes=10).astype(int)
     y_test = to_categorical(y_test, num_classes=10).astype(int)
@@ -32,6 +43,14 @@ def train_model(X_train, y_train, X_test, y_test, epochs=30, batch_size=32):
 
 
 def get_model(input_shape=(28, 28, 1), feature_extraction_layer_name='feature_extraction'):
+    """
+    Get the CNN architecture
+
+    :param input_shape: Input shape of the data, not including the number of training examples
+    :param feature_extraction_layer_name: Name for the final dense layer before the output layer
+
+    :return: The uncompiled keras sequential model
+    """
     model = Sequential()
 
     model.add(Conv2D(filters=32, kernel_size=(5, 5), padding='Same',
@@ -57,6 +76,15 @@ def get_model(input_shape=(28, 28, 1), feature_extraction_layer_name='feature_ex
 
 
 def extract_features(model, X, feature_extraction_layer_name='feature_extraction'):
+    """
+    Get the values for the last dense layer before the output layer
+
+    :param model: The keras model that has already been trained
+    :param X: np.array of shape nxpxp1 of images to extract features from
+    :param feature_extraction_layer_name: Name of the final dense layer before the output layer
+
+    :return: np.array of shape nxm of extracted features
+    """
     feature_extraction_layer_model = Model(inputs=model.input,
                                            outputs=model.get_layer(feature_extraction_layer_name).output)
     return feature_extraction_layer_model.predict(X)

@@ -7,6 +7,16 @@ import numpy as np
 
 
 def tune_xgb(X_train, y_train, use_evolution=True):
+    """
+    Optimize hyperparams for the XGBoost classifier
+
+    :param X_train: Training images, np.array of shape nxpxpx1
+    :param y_train: Training labels, np.array of shape n
+
+    :param use_evolution: If true, use a genetic algorithm to tune hyperparams, else use an exhaustive grid search
+
+    :return: The fitted model from the search (sklearn GridSearchCV object or EvolutionaryAlgorithmSearchCV object)
+    """
     gbm = xgb.XGBClassifier(max_depth=3, n_estimators=300, learning_rate=0.05)
 
     param_grid = {
@@ -46,6 +56,16 @@ def tune_xgb(X_train, y_train, use_evolution=True):
 
 
 def fit_xgb(X_train, y_train, params):
+    """
+    Fit the XGBoost model with the given params
+
+    :param X_train: Training images, np.array of shape nxpxpx1
+    :param y_train: Training labels, np.array of shape n
+
+    :param params: Hyperparams to use for the model
+
+    :return: The fit XGBClassifier object
+    """
     gbm = xgb.XGBClassifier(**params)
     gbm.fit(X_train, y_train)
 

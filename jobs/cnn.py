@@ -14,11 +14,14 @@ from estimators import cnn
 
 class KerasCNNFitModel(luigi.Task):
     """
-    Run the CNN pipeline
+    Fir the Keras Convolutional Neural Network
     """
 
     def requires(self):
-        return [AugmentData(), PreprocessRawData()]
+        return [
+            AugmentData(),
+            PreprocessRawData(),
+        ]
 
     def output(self):
         return luigi.LocalTarget(os.path.join(DATA_ROOT, 'pointers', 'KerasCNNFitModel.json'))
@@ -55,11 +58,15 @@ class KerasCNNFitModel(luigi.Task):
 
 class KerasCNNExtractFeatures(luigi.Task):
     """
-    Extract features from the trained model
+    Extract features from the trained convolutional neural network
     """
 
     def requires(self):
-        return [KerasCNNFitModel(), AugmentData(), PreprocessRawData()]
+        return [
+            KerasCNNFitModel(),
+            AugmentData(),
+            PreprocessRawData(),
+        ]
 
     def output(self):
         return luigi.LocalTarget(os.path.join(DATA_ROOT, 'pointers', 'KerasCNNExtractFeatures.json'))

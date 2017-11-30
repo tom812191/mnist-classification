@@ -13,7 +13,7 @@ from util import evaluate
 
 class Evaluate(luigi.Task):
     """
-    Search the hyperparameter space to select the best XGBoost model
+    Calculate metrics on the final fit XGBoost model
     """
 
     def requires(self):
