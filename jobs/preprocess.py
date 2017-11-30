@@ -4,7 +4,7 @@ import numpy as np
 import os
 import json
 
-from config import DATA_TRAIN, DATA_TEST, DATA_ROOT
+from config import DATA_TRAIN, DATA_TEST, DATA_ROOT, PREPROCESS_CONFIG
 
 from util import image
 
@@ -26,7 +26,8 @@ class AugmentData(luigi.Task):
         X_train = np.load(paths['X_train'])
         y_train = np.load(paths['y_train'])
 
-        X_aug_train, y_aug_train = image.augment_data(X_train, y_train, factor=10)
+        X_aug_train, y_aug_train = image.augment_data(X_train, y_train,
+                                                      factor=PREPROCESS_CONFIG['data_augmentation_factor'])
 
         paths = {
             'X_aug_train': os.path.join(DATA_ROOT, 'X_aug_train.npy'),

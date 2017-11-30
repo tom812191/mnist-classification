@@ -6,7 +6,7 @@ import pickle
 
 from keras.models import load_model
 
-from config import DATA_ROOT
+from config import DATA_ROOT, CNN_CONFIG
 
 from jobs.preprocess import AugmentData, PreprocessRawData
 from estimators import cnn
@@ -37,7 +37,7 @@ class KerasCNNFitModel(luigi.Task):
         X_test = np.load(paths['X_test'])
         y_test = np.load(paths['y_test'])
 
-        history, model = cnn.train_model(X_aug_train, y_aug_train, X_test, y_test, epochs=40)
+        history, model = cnn.train_model(X_aug_train, y_aug_train, X_test, y_test, epochs=CNN_CONFIG['epochs'])
 
         paths = {
             'history': os.path.join(DATA_ROOT, 'cnn_history.p'),
