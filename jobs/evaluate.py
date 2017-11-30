@@ -58,7 +58,7 @@ class EvaluateCNN(luigi.Task):
         ]
 
     def output(self):
-        return luigi.LocalTarget(os.path.join(DATA_ROOT, 'evaluation.json'))
+        return luigi.LocalTarget(os.path.join(DATA_ROOT, 'evaluation.p'))
 
     def run(self):
         with self.input()[0].open('r') as path_file:
