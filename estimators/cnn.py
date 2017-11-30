@@ -11,7 +11,7 @@ def train_model(X_train, y_train, X_test, y_test, epochs=30, batch_size=32):
     y_test = to_categorical(y_test, num_classes=10).astype(int)
 
     model = get_model()
-    optimizer = RMSprop(lr=0.0005, rho=0.9, epsilon=1e-08, decay=0.0)
+    optimizer = RMSprop(lr=0.0001, rho=0.9, epsilon=1e-08, decay=0.0)
 
     model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
 
