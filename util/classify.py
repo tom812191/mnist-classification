@@ -1,34 +1,25 @@
 import numpy as np
+import os
 from skimage import transform, color
 from scipy import misc
 
 
-def load_png(path):
+def load_png(path='/Users/tom/Projects/Portfolio/data/mnist-classification', num=0):
+    path = os.path.join(path, '{}.png'.format(str(num)))
     return color.rgb2gray(misc.imread(path)) * 255.
 
 
-def classify(image, cnn_feat, xgb):
+def classify(image, cnn):
     """
     Given an nxn image, classify the digit using the pre-trained models
 
     :param image: np.array of shape nxn
-    :param cnn_feat: CNN Feature extractor model
-    :param xgb: XGBoost model
+    :param cnn: CNN  model
 
     :return: label, probability
     """
     image = normalize_image(reshape_image(image))
-    features = cnn_feat.predict(image)
-    label, probabilities = xgb.predict(features)[0], xgb.predict_proba(features)
-
-    return label, probabilities.max()
-
-
-def classify_cnn(image, cnn):
-    image = normalize_image(reshape_image(image))
-    probs = cnn.predict(image)[0]
-
-    return probs.argmax(), probs.max(), image
+    return cnn.predict(image)
 
 
 def reshape_image(image):
