@@ -76,5 +76,5 @@ class EvaluateCNN(luigi.Task):
 
         evaluation = evaluate.evaluate_output(proba_predictions, y_test)
 
-        with self.output().open('w') as f:
+        with self.output().open('wb') as f:
             pickle.dump(evaluation, f)
