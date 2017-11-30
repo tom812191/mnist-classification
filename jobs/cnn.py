@@ -45,7 +45,7 @@ class KerasCNNFitModel(luigi.Task):
 
         paths = {
             'history': os.path.join(DATA_ROOT, 'cnn_history.p'),
-            'model': CNN_CONFIG['model_path'],
+            'model': os.path.join(DATA_ROOT, 'cnn.h5'),
         }
 
         with open(paths['history'], 'wb') as history_file:

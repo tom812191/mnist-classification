@@ -1,12 +1,6 @@
 import numpy as np
-import os
-from skimage import transform, color
-from scipy import misc
-
-
-def load_png(path='/Users/tom/Projects/Portfolio/data/mnist-classification', num=0):
-    path = os.path.join(path, '{}.png'.format(str(num)))
-    return color.rgb2gray(misc.imread(path)) * 255.
+from skimage import transform
+import math
 
 
 def classify(image, cnn):
@@ -16,21 +10,29 @@ def classify(image, cnn):
     :param image: np.array of shape nxn
     :param cnn: CNN  model
 
-    :return: label, probability
+    :return: label, probabilities
     """
     image = normalize_image(reshape_image(image))
-    return cnn.predict(image)
+    predictions = cnn.predict(image)
+    return int(np.argmax(predictions)), predictions[0].tolist()
 
 
 def reshape_image(image):
     """
-    Reshape the numpy array from nxn to nxnx1
+    Reshape the numpy array to nxnx1
 
-    :param image: np.array of shape nxn
+    :param image: np.array of shape nxn or 1d array of length n^2
     :return: np.array of shape nxnx1
     """
     shape = image.shape
-    return image.reshape((shape[0], shape[1], 1))
+    if len(shape) == 2:
+        return image.reshape((shape[0], shape[1], 1))
+
+    if len(shape) == 1:
+        n = math.sqrt(shape[0])
+        assert n == int(n)
+        n = int(n)
+        return image.reshape((n, n, 1))
 
 
 def normalize_image(image, p=28):
@@ -45,6 +47,8 @@ def normalize_image(image, p=28):
     """
 
     new_image = transform.resize(image, (p, p, 1))
-    new_image = new_image / 255.
+
+    if image.max() > 1:
+        new_image = new_image / 255.
 
     return np.array([new_image])
