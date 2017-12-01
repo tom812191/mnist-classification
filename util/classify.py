@@ -48,7 +48,7 @@ def normalize_image(image, p=28):
 
     new_image = transform.resize(image, (p, p, 1))
 
-    if image.max() > 1:
+    if image.max() > 1.01:
         new_image = new_image / 255.
 
     return np.array([new_image])
