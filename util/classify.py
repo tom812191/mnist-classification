@@ -12,7 +12,7 @@ def classify(image, cnn):
 
     :return: label, probabilities
     """
-    image = normalize_image(reshape_image(image))
+    image = normalize_image(reshape_image(image.astype(float)))
     predictions = cnn.predict(image)
     return int(np.argmax(predictions)), predictions[0].tolist()
 
